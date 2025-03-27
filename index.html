@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Wall of Clocks</title>
+    <title>World Clock Wall</title>
     <style>
         body {
             display: grid;
@@ -34,10 +34,9 @@
             background: white;
         }
         .time {
-            font-size: 20px;
-            font-weight: bold;
+            font-size: 18px;
             position: absolute;
-            text-align: center;
+            z-index: 1; /* Ensure the time stays on top of the clock */
         }
         .label {
             margin-top: 10px;
