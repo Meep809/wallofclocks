@@ -41,6 +41,10 @@
             text-overflow: ellipsis;
             width: 150px;
         }
+        .time {
+            font-size: 18px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -59,15 +63,29 @@
             const clock = document.createElement("div");
             clock.className = "clock";
             
+            const timeDisplay = document.createElement("div");
+            timeDisplay.className = "time";
+            
             const label = document.createElement("div");
             label.className = "label";
             label.textContent = `${city} (${timeZone.split('/')[0]})`;
             
             container.appendChild(clock);
+            container.appendChild(timeDisplay);
             container.appendChild(label);
             document.body.appendChild(container);
             
-            clocks.push({ container, label, city });
+            clocks.push({ container, label, city, timeDisplay, timeZone });
+
+            function updateClock() {
+                const now = new Date();
+                const options = { timeZone, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+                const time = new Intl.DateTimeFormat('en-US', options).format(now);
+                timeDisplay.textContent = time;
+            }
+
+            updateClock();
+            setInterval(updateClock, 1000);
         }
 
         function filterClocks() {
