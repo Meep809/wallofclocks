@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>World Clock Wall</title>
+    <title>The Wall of Clocks</title>
     <style>
         body {
             display: grid;
@@ -33,6 +33,11 @@
             position: relative;
             background: white;
         }
+        .time {
+            font-size: 18px;
+            font-weight: bold;
+            position: absolute;
+        }
         .label {
             margin-top: 10px;
             font-size: 14px;
@@ -41,5 +46,62 @@
             text-overflow: ellipsis;
             width: 150px;
         }
-        .time {
-            font-size:
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search for a city or time zone..." oninput="filterClocks()">
+    </div>
+    
+    <script>
+        const timeZones = Intl.supportedValuesOf('timeZone').map(zone => ({ city: zone.split('/').pop().replace(/_/g, ' '), zone }));
+        let clocks = [];
+
+        function createClock(city, timeZone) {
+            const container = document.createElement("div");
+            container.className = "clock-container";
+            
+            const clock = document.createElement("div");
+            clock.className = "clock";
+            
+            const timeDisplay = document.createElement("div");
+            timeDisplay.className = "time";
+            
+            const label = document.createElement("div");
+            label.className = "label";
+            label.textContent = `${city} (${timeZone.split('/')[0]})`;
+            
+            container.appendChild(clock);
+            container.appendChild(timeDisplay);
+            container.appendChild(label);
+            document.body.appendChild(container);
+            
+            clocks.push({ container, label, city, timeDisplay, timeZone });
+
+            function updateClock() {
+                const now = new Date();
+                const options = { timeZone, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+                const time = new Intl.DateTimeFormat('en-US', options).format(now);
+                timeDisplay.textContent = time;
+            }
+
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
+
+        function filterClocks() {
+            const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+            clocks.forEach(({ container, label, city }) => {
+                const cityText = city.toLowerCase();
+                if (cityText.includes(searchTerm)) {
+                    container.style.display = "block"; // Show clock
+                } else {
+                    container.style.display = "none"; // Hide clock
+                }
+            });
+        }
+
+        timeZones.forEach(({ city, zone }) => createClock(city, zone));
+    </script>
+</body>
+</html>
