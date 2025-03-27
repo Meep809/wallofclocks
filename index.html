@@ -30,13 +30,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
+            font-size: 16px;
             background: white;
-        }
-        .time {
-            font-size: 18px;
             position: relative;
-            z-index: 1; /* Ensure the time stays on top of the clock */
         }
         .label {
             margin-top: 10px;
@@ -49,6 +45,7 @@
     </style>
 </head>
 <body>
+
     <div class="search-container">
         <input type="text" id="searchInput" placeholder="Search for a city or time zone..." oninput="filterClocks()">
     </div>
@@ -64,25 +61,20 @@
             const clock = document.createElement("div");
             clock.className = "clock";
             
-            const timeDisplay = document.createElement("div");
-            timeDisplay.className = "time";
-            
             const label = document.createElement("div");
             label.className = "label";
             label.textContent = `${city} (${timeZone.split('/')[0]})`;
             
             container.appendChild(clock);
-            container.appendChild(timeDisplay);
             container.appendChild(label);
             document.body.appendChild(container);
             
-            clocks.push({ container, label, city, timeDisplay, timeZone });
+            clocks.push({ container, city });
 
             function updateClock() {
                 const now = new Date();
                 const options = { timeZone, hour: '2-digit', minute: '2-digit', second: '2-digit' };
-                const time = new Intl.DateTimeFormat('en-US', options).format(now);
-                timeDisplay.textContent = time;
+                clock.textContent = new Intl.DateTimeFormat('en-US', options).format(now);
             }
 
             updateClock();
@@ -91,7 +83,7 @@
 
         function filterClocks() {
             const searchTerm = document.getElementById("searchInput").value.toLowerCase();
-            clocks.forEach(({ container, label, city }) => {
+            clocks.forEach(({ container, city }) => {
                 const cityText = city.toLowerCase();
                 if (cityText.includes(searchTerm)) {
                     container.style.display = "block"; // Show clock
@@ -103,5 +95,6 @@
 
         timeZones.forEach(({ city, zone }) => createClock(city, zone));
     </script>
+
 </body>
 </html>
