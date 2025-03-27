@@ -6,15 +6,16 @@
     <title>World Clock Wall</title>
     <style>
         body {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
             justify-content: center;
             background-color: #f0f0f0;
             font-family: Arial, sans-serif;
+            padding: 20px;
         }
         .clock-container {
             text-align: center;
-            margin: 20px;
         }
         .clock {
             width: 150px;
@@ -30,6 +31,11 @@
         }
         .label {
             margin-top: 10px;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 150px;
         }
     </style>
 </head>
@@ -46,7 +52,7 @@
             
             const label = document.createElement("div");
             label.className = "label";
-            label.textContent = `${city} (${timeZone})`;
+            label.textContent = `${city} (${timeZone.split('/')[0]})`;
             
             container.appendChild(clock);
             container.appendChild(label);
