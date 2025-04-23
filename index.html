@@ -1,5 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Great Wall of Clocks</title>
+    <link href='https://fonts.googleapis.com/css?family=Libre Franklin' rel='stylesheet'>
+    <style>
+        body {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            justify-content: center;
+            background-color: #f0f0f0;
+            font-family: 'Libre Franklin';font-size: 22px;
+            font-weight: 300;
+            padding: 20px;
+        }
+        .search-container {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
+            grid-column: 1 / -1;
+        }
+        .intro {
+            text-align: center;
+            grid-column: 1 / -1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        }
+        .clock-container {
+            text-align: center;
+        }
+        .clock {
+            width: 150px;
+            height: 150px;
+            border: 5px solid black;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            background: white;
+            position: relative;
+        }
+        .label {
+            margin-top: 10px;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 150px;
+        }
+    </style>
+</head>
 <body>
-    <div class="header">
+
+    <div class="intro">
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search for a city or time zone..." oninput="filterClocks()">
         </div>
@@ -7,27 +66,27 @@
         <p>This is <b>every</b> time zone in the world, all on one webpage! Search for your city using the search function.</p>
     </div>
 
-    <div class="clock-grid" id="clockGrid"></div>
-
     <script>
         const timeZones = Intl.supportedValuesOf('timeZone').map(zone => ({ city: zone.split('/').pop().replace(/_/g, ' '), zone }));
         let clocks = [];
 
+        const body = document.body;
+
         function createClock(city, timeZone) {
             const container = document.createElement("div");
             container.className = "clock-container";
-
+            
             const clock = document.createElement("div");
             clock.className = "clock";
-
+            
             const label = document.createElement("div");
             label.className = "label";
             label.textContent = `${city} (${timeZone.split('/')[0]})`;
-
+            
             container.appendChild(clock);
             container.appendChild(label);
-            document.getElementById("clockGrid").appendChild(container);
-
+            body.appendChild(container);
+            
             clocks.push({ container, city });
 
             function updateClock() {
@@ -50,4 +109,6 @@
 
         timeZones.forEach(({ city, zone }) => createClock(city, zone));
     </script>
+
 </body>
+</html>
