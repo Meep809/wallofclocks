@@ -77,49 +77,71 @@
         </div>
     </div>
 
-    <script>
-        const timeZones = Intl.supportedValuesOf('timeZone').map(zone => ({ city: zone.split('/').pop().replace(/_/g, ' '), zone }));
-        let clocks = [];
+<script>
+    const timeZones = Intl.supportedValuesOf('timeZone')
+        .map(zone => ({ 
+            city: zone.split('/').pop().replace(/_/g, ' '), 
+            zone 
+        }));
+    let clocks = [];
 
-        const body = document.body;
+    function createClock(city, timeZone) {
+        const container = document.createElement("div");
+        container.className = "clock-container";
+        
+        const clock = document.createElement("div");
+        clock.className = "clock";
+        
+        // get the abbreviation once:
+        const now = new Date();
+        const parts = new Intl.DateTimeFormat('en-US', {
+            timeZone,
+            timeZoneName: 'short'
+        }).formatToParts(now);
+        const abbr = parts.find(p => p.type === 'timeZoneName').value; 
 
-        function createClock(city, timeZone) {
-            const container = document.createElement("div");
-            container.className = "clock-container";
-            
-            const clock = document.createElement("div");
-            clock.className = "clock";
-            
-            const label = document.createElement("div");
-            label.className = "label";
-            label.textContent = `${city} (${timeZone.split('/')[0]})`;
-            
-            container.appendChild(clock);
-            container.appendChild(label);
-            body.appendChild(container);
-            
-            clocks.push({ container, city });
+        // label shows city + abbrev
+        const label = document.createElement("div");
+        label.className = "label";
+        label.textContent = `${city} (${abbr})`;
 
-            function updateClock() {
-                const now = new Date();
-                const options = { timeZone, hour: '2-digit', minute: '2-digit', second: '2-digit' };
-                clock.textContent = new Intl.DateTimeFormat('en-US', options).format(now);
+        container.appendChild(clock);
+        container.appendChild(label);
+        document.body.appendChild(container);
+
+        clocks.push({ container, city, abbr });
+
+        function updateClock() {
+            const now = new Date();
+            const options = {
+                timeZone,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            clock.textContent = new Intl.DateTimeFormat('en-US', options).format(now);
+        }
+
+        updateClock();
+        setInterval(updateClock, 1000);
+    }
+
+    function filterClocks() {
+        const searchTerm = document.getElementById("searchInput")
+            .value.toLowerCase();
+        clocks.forEach(({ container, city, abbr }) => {
+            const cityText = city.toLowerCase();
+            const zoneText = abbr.toLowerCase();
+            if (cityText.includes(searchTerm) || zoneText.includes(searchTerm)) {
+                container.style.display = "block";
+            } else {
+                container.style.display = "none";
             }
+        });
+    }
 
-            updateClock();
-            setInterval(updateClock, 1000);
-        }
-
-        function filterClocks() {
-            const searchTerm = document.getElementById("searchInput").value.toLowerCase();
-            clocks.forEach(({ container, city }) => {
-                const cityText = city.toLowerCase();
-                container.style.display = cityText.includes(searchTerm) ? "block" : "none";
-            });
-        }
-
-        timeZones.forEach(({ city, zone }) => createClock(city, zone));
-    </script>
+    timeZones.forEach(({ city, zone }) => createClock(city, zone));
+</script>
 
 </body>
 </html>
